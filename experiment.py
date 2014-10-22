@@ -1,6 +1,8 @@
 """This module contains the class to help build a standard experiment."""
 from __future__ import print_function
 from psychopy import visual, core, event
+import time
+import datetime
 
 
 class ExitException(Exception):
@@ -16,6 +18,7 @@ class AbstractSlide(object):
         self.configurations = configurations
 
     def show(self):
+        timestamp = datetime.datetime.fromtimestamp(time.time())
         event.clearEvents()
         i_frame = 0
         total_time = False
@@ -32,7 +35,7 @@ class AbstractSlide(object):
         self.window.flip(clearBuffer=True)
         core.wait(self.pausetime)
         ans = self.getAnswerValue(answers)
-        ans.update({'reaction time':total_time})
+        ans.update({'reaction time':total_time, 'timestamp':timestamp})
         ans.update(self.configurations)
         return ans
 
@@ -63,12 +66,14 @@ class Experiment(object):
         self.slides = None
         self.logger = None
         self.wait_time = None
-        self.win = visual.Window(winType='pyglet')
+        self.experiment_id = None
+        self.win = None
 
-    def configure(self, instructions, slides, logger):
+    def configure(self, instructions, slides, logger, window):
         self.instructions = instructions
         self.slides = slides
         self.logger = logger
+        self.win = window
 
     def run(self):
         """Run the preconfigured experiment."""
@@ -76,7 +81,3 @@ class Experiment(object):
         for slide in self.slides:
             ret_val = slide.show()
             self.logger.log_trial(ret_val)
-        self.logger.save_to_csv()
-
-    def getWindow(self):
-        return self.win

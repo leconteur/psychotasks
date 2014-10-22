@@ -8,8 +8,7 @@ import experiment_logger as el
 def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, window):
     """Configure a nback experiment. Returns the chosen value for each trial and
     the target value."""
-    configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
-               'positives':positives}
+
     slides = []
     for i in range(n_trials):
         if i < 3:  # There is no target in the first 3 sample
@@ -23,6 +22,8 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, w
                 while choice == slides[i-n_back].value:
                     choice = random.choice(choices)
                 target = False
+        configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
+                   'positives':positives, 'target':target}
         slide = NBackSlide(choice, target, showtime, pausetime, configs, window)
         slides.append(slide)
     return slides
@@ -66,15 +67,26 @@ class NBackSlide(AbstractSlide):
 
 
 if __name__ == "__main__":
-    print("Testing experiment")
-    instructions = Instructions("Bonjour", 4)
-    experiment = Experiment()
-    window = experiment.getWindow()
     letters = 'bcdfgljllmnplrstvwxz'
-    slides = configure_nback(10, 0.5, 1, letters, 1, 0.5, window)
+    showtime = 1
+    pausetime = 0.5
+    nslides = 10
+    positive_rate = 0.3
+    window = visual.Window(winType='pyglet')
     logger = el.Logger('test.log', check_filename=False)
-    experiment.configure(instructions, slides, logger)
+
+    easy_instructions = Instructions("1-back", 4)
+    easy_experiment = Experiment()
+    easy_slides = configure_nback(nslides, positive_rate, 1, letters, showtime, pausetime, window)
+    easy_experiment.configure(easy_instructions, easy_slides, logger, window)
+
+    hard_instructions = Instructions("2-back", 4)
+    hard_experiment = Experiment()
+    hard_slides = configure_nback(nslides, positive_rate, 2, letters, showtime, pausetime, window)
+    hard_experiment.configure(hard_instructions, hard_slides, logger, window)
     try:
-        experiment.run()
+        easy_experiment.run()
+        hard_experiment.run()
     finally:
         window.close()
+        logger.save_to_csv()

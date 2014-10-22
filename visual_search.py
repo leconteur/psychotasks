@@ -1,7 +1,7 @@
 from __future__ import print_function
 from psychopy import event
 from experiment import AbstractSlide
-from shapes import *
+from shapes import Triangle, Square, Circle
 import random
 
 shapes = [Triangle, Square, Circle]
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         share_color = True
         share_shape = True
         slides = configure_vs(10, 30, 0.5, 'black', Triangle, share_color, share_shape, window)
-        logger = el.Logger('test_mr.log', check_filename=False)
+        logger = el.Logger('test_vs.log', check_filename=False)
         experiment.configure(instructions, slides, logger)
         experiment.run()
     finally:
