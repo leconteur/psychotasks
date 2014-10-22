@@ -1,5 +1,5 @@
 from __future__ import print_function
-from psychopy import event
+from psychopy import event, visual
 from experiment import AbstractSlide
 from shapes import Triangle, Square, Circle
 import random
@@ -9,7 +9,7 @@ colors = ['red', 'green', 'blue', 'black']
 
 
 def configure_vs(n_slides, n_distractors, pausetime, target_color, target_type,
-                 target_share_color, target_share_shape, window):
+                 target_share_color, target_share_shape, experiment_id, window):
     slides = []
     for _ in range(n_slides):
         slideshapes = []
@@ -23,7 +23,12 @@ def configure_vs(n_slides, n_distractors, pausetime, target_color, target_type,
             distractor = shape(window, color, getRandomPos())
             if not contains(slideshapes, distractor):
                 slideshapes.append(distractor)
-        slides.append(VisualSearchSlide(slideshapes[0], slideshapes[1:], pausetime, {}, window))
+        configs = {'n_distractors':n_distractors, 'pausetime':pausetime,
+                   'target_color':target_color, 'target_type':target_type.name,
+                   'target share color':target_share_color, 'target_share_type':target_share_shape,
+                   'experiment id': experiment_id}
+        slides.append(VisualSearchSlide(slideshapes[0], slideshapes[1:], pausetime,
+                                        configs, window))
 
     return slides
 
@@ -78,14 +83,25 @@ if __name__ == "__main__":
     from experiment import Instructions, Experiment
     import experiment_logger as el
     try:
-        instructions = Instructions("Bonjour", 1)
-        experiment = Experiment()
-        window = experiment.getWindow()
+        window = visual.Window(winType='pyglet')
+        logger = el.Logger('test_vs.log', check_filename=False)
+        easy_instructions = Instructions("Bonjour", 1)
+        easy_experiment = Experiment()
+        share_color = False
+        share_shape = False
+        easy_slides = configure_vs(10, 10, 0.5, 'black', Triangle, share_color,
+                                   share_shape, 'easy', window)
+        easy_experiment.configure(easy_instructions, easy_slides, logger, window)
+        easy_experiment.run()
+
+        hard_instructions = Instructions("Bonjour", 1)
+        hard_experiment = Experiment()
         share_color = True
         share_shape = True
-        slides = configure_vs(10, 30, 0.5, 'black', Triangle, share_color, share_shape, window)
-        logger = el.Logger('test_vs.log', check_filename=False)
-        experiment.configure(instructions, slides, logger)
-        experiment.run()
+        hard_slides = configure_vs(10, 80, 0.5, 'black', Triangle, share_color,
+                                   share_shape, 'hard', window)
+        hard_experiment.configure(hard_instructions, hard_slides, logger, window)
+        hard_experiment.run()
     finally:
         window.close()
+        logger.save_to_csv()
