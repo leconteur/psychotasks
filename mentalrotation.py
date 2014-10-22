@@ -30,6 +30,9 @@ class MentalRotationSlide(AbstractSlide):
         self.difficulty = difficulty
         self.target = target
         super(MentalRotationSlide, self).__init__(showtime, pausetime, configurations, window)
+        window.setColor('white')
+        window.flip()
+        window.flip()
         leftfile, rightfile = self.configureSlide()
         self.leftimage = visual.ImageStim(self.window, leftfile, units='norm')
         self.leftimage.setSize(1, units='norm')
@@ -104,11 +107,11 @@ if __name__ == "__main__":
     logger = el.Logger('test_mr.log', check_filename=False)
 
     easy_experiment = Experiment()
-    easy_instructions = Instructions("Easy", 4)
+    easy_instructions = Instructions("Easy", 4, color='black')
     easy_slides = configure_mr(EASY, 8, 1, window)
     easy_experiment.configure(easy_instructions, easy_slides, logger, window)
     hard_experiment = Experiment()
-    hard_instructions = Instructions("Hard", 4)
+    hard_instructions = Instructions("Hard", 4, color='black')
     hard_slides = configure_mr(HARD, 8, 1, window)
     hard_experiment.configure(hard_instructions, hard_slides, logger, window)
     try:
