@@ -94,6 +94,12 @@ if __name__ == "__main__":
         easy_experiment.configure(easy_instructions, easy_slides, logger, window)
         easy_experiment.run()
 
+
+        shapes = [Triangle, Square, Circle]
+        colors = ['red', 'black']
+
+
+
         hard_instructions = Instructions("Bonjour", 1)
         hard_experiment = Experiment()
         share_color = True
