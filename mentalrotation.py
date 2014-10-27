@@ -7,8 +7,8 @@ import random
 EASY = 0
 HARD = 1
 
-def configure_mr(difficulty, showtime, pausetime, window):
-    target = [random.randint(0, 1) == 1 for _ in range(10)]
+def configure_mr(nslides, difficulty, showtime, pausetime, window):
+    target = [random.randint(0, 1) == 1 for _ in range(nslides)]
     slides = []
     for t in target:
         diff = 'easy' if difficulty == EASY else 'hard'
@@ -108,11 +108,11 @@ if __name__ == "__main__":
 
     easy_experiment = Experiment()
     easy_instructions = Instructions("Easy", 4, color='black')
-    easy_slides = configure_mr(EASY, 8, 1, window)
+    easy_slides = configure_mr(30, EASY, 8, 1, window)
     easy_experiment.configure(easy_instructions, easy_slides, logger, window)
     hard_experiment = Experiment()
     hard_instructions = Instructions("Hard", 4, color='black')
-    hard_slides = configure_mr(HARD, 8, 1, window)
+    hard_slides = configure_mr(30, HARD, 8, 1, window)
     hard_experiment.configure(hard_instructions, hard_slides, logger, window)
     try:
         easy_experiment.run()
