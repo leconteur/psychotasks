@@ -7,15 +7,14 @@ import numpy as np
 import random
 import string
 
-shapes = [Triangle, Square, Circle]
-colors = ['red', 'green', 'blue', 'black']
-
 
 class Letter(visual.TextStim):
     def contains(self, other):
-        return norm(self.pos - other.getPos()) < 0.07
+        return norm(self.pos - other.getPos()) < 0.05
+
 
 class ConfigurationError(Exception): pass
+
 
 class VisualSearchSlideFactory(object):
     TARGET_TYPES = ["vowel", "consonnant", "letter"]
@@ -60,7 +59,7 @@ class VisualSearchSlideFactory(object):
     def createDistractor(self):
         pos = getRandomPos()
         for dist in self.distractors + [self.target]:
-            if norm(dist.pos - pos) < 0.05:
+            if norm(dist.pos - pos) < 0.1:
                 return
         text = random.choice(string.ascii_uppercase)
         color = random.choice(self.COLORS[0:self.configurations.get('distractor_colors', 1)])
@@ -80,45 +79,7 @@ class VisualSearchSlideFactory(object):
         else:
             return False
 
-def configure_vs(n_slides, n_distractors, pausetime, target_color, target_type,
-                 target_share_color, target_share_shape, experiment_id, window):
-    slides = []
-    for _ in range(n_slides):
-        slideshapes = []
-        slideshapes.append(target_type(window, target_color, getRandomPos()))
-        while len(slideshapes) <= n_distractors:
-            shape, color = getRandomShape(target_type, target_color)
-            if color_invalid(target_color, color, target_share_color):
-                continue
-            if shape_invalid(target_type, shape, target_share_shape):
-                continue
-            distractor = shape(window, color, getRandomPos())
-            if not contains(slideshapes, distractor):
-                slideshapes.append(distractor)
-        configs = {'n_distractors':n_distractors, 'pausetime':pausetime,
-                   'target_color':target_color, 'target_type':target_type.name,
-                   'target share color':target_share_color, 'target_share_type':target_share_shape,
-                   'experiment id': experiment_id}
-        slides.append(VisualSearchSlide(slideshapes[0], slideshapes[1:], pausetime,
-                                        configs, window))
 
-    return slides
-
-
-def color_invalid(target_color, color, target_share_color):
-    return target_color == color and target_share_color is False
-
-
-def shape_invalid(target_type, shape, target_share_shape):
-    return target_type == shape and target_share_shape is False
-
-
-def getRandomShape(target_shape, target_color):
-    color, shape = target_color, target_shape
-    while color == target_color and shape == target_shape:
-        color = random.choice(colors)
-        shape = random.choice(shapes)
-    return shape, color
 
 
 def getRandomPos():
@@ -157,7 +118,7 @@ def main_letters():
     from experiment import Instructions, Experiment
     import experiment_logger as el
     try:
-        window = visual.Window(winType='pyglet', fullscr=True, waitBlanking=True)
+        window = visual.Window(winType='pyglet', fullscr=True, waitBlanking=True, screen=1)
         logger = el.Logger('test_vs.log', check_filename=False)
         easy_instructions = Instructions("Bonjour", 1)
         easy_experiment = Experiment()
@@ -180,37 +141,5 @@ def main_letters():
         window.close()
         logger.save_to_csv()
 
-
-def main_shapes():
-    from experiment import Instructions, Experiment
-    import experiment_logger as el
-    try:
-        window = visual.Window(winType='pyglet')
-        logger = el.Logger('test_vs.log', check_filename=False)
-        easy_instructions = Instructions("Bonjour", 1)
-        easy_experiment = Experiment()
-        share_color = False
-        share_shape = False
-        easy_slides = configure_vs(30, 10, 0.5, 'black', Triangle, share_color,
-                                   share_shape, 'easy', window)
-        easy_experiment.configure(easy_instructions, easy_slides, logger, window)
-        easy_experiment.run()
-
-        shapes = [Triangle, Square, Circle]
-        colors = ['red', 'black']
-
-        hard_instructions = Instructions("Bonjour", 1)
-        hard_experiment = Experiment()
-        share_color = True
-        share_shape = True
-        hard_slides = configure_vs(30, 80, 0.5, 'black', Triangle, share_color,
-                                   share_shape, 'hard', window)
-        hard_experiment.configure(hard_instructions, hard_slides, logger, window)
-        hard_experiment.run()
-    finally:
-        window.close()
-        logger.save_to_csv()
-
 if __name__ == "__main__":
-    # main_shapes()
     main_letters()
