@@ -22,8 +22,10 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, w
                 while choice == slides[i-n_back].value:
                     choice = random.choice(choices)
                 target = False
+        workload = 'low' if n_back <= 1 else 'high'
         configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
-                   'positives':positives, 'target':target}
+                   'positives':positives, 'target':target, 'taskname':'nback',
+                   'workload':workload}
         slide = NBackSlide(choice, target, showtime, pausetime, configs, window)
         slides.append(slide)
     return slides

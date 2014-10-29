@@ -11,8 +11,8 @@ def configure_mr(nslides, difficulty, showtime, pausetime, window):
     target = [random.randint(0, 1) == 1 for _ in range(nslides)]
     slides = []
     for t in target:
-        diff = 'easy' if difficulty == EASY else 'hard'
-        configs = {'showtime':showtime, 'pausetime':pausetime, 'difficulty':diff}
+        diff = 'low' if difficulty == EASY else 'high'
+        configs = {'showtime':showtime, 'pausetime':pausetime, 'workload':diff}
         slides.append(MentalRotationSlide(t, difficulty, showtime, pausetime, configs, window))
     return slides
 
@@ -59,7 +59,7 @@ class MentalRotationSlide(AbstractSlide):
         self.configurations.update({'target':self.target, 'left image':leftchoice,
                                     'right image':rightchoice, 'xz':xz, 'image number':imagenumber,
                                     'left rotation':leftdegree, 'right rotation':rightdegree,
-                                    'rotation difference':diff})
+                                    'rotation difference':diff, 'taskname':'mental rotation'})
         return leftfile, rightfile
 
     def getRotation(self):

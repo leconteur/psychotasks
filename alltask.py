@@ -80,7 +80,7 @@ def runEasyVisualSearch(window, logger, n_slides):
     instructions = experiment.Instructions(instruction_text, 5)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
-                           target_letter='A', difficulty='low')
+                           target_letter='A', workload='low')
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, window)
     exp.run()
@@ -92,7 +92,7 @@ def runHardVisualSearch(window, logger, n_slides):
     instructions = experiment.Instructions(instruction_text, 5)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1.0, target_type='vowel',
-                               distractor_colors=2, rotation=15, difficulty='high')
+                               distractor_colors=2, rotation=15, workload='high')
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, window)
     exp.run()

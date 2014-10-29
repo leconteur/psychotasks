@@ -6,21 +6,16 @@ from scipy.stats import ttest_ind
 pd.options.display.mpl_style = 'default'
 
 if __name__ == "__main__":
-    data_nback = pd.read_csv('test.log')
-    data_nback['workload'] = np.where(data_nback['n_back'] == 1, 'low', 'high')
-    data_nback['task'] = 'nback'
-    data_nback.index = data_nback['timestamp']
-    data_vs = pd.read_csv('test_vs.log')
-    data_vs['workload'] = data_vs['difficulty']
-    data_vs['task'] = 'visual search'
-    data_vs.index = data_vs.timestamp
-    data_mr = pd.read_csv('test_mr.log')
-    data_mr['workload'] = np.where(data_mr['difficulty'] == 'easy', 'low', 'high')
-    data_mr['task'] = 'mental rotation'
-    data_mr.index = data_mr.timestamp
-    data = pd.concat([data_nback, data_vs, data_mr])
-    data = data.loc[:, ['workload', 'reaction time', 'task']]
+    data = pd.read_csv('testall.log')
+    data.index = data['timestamp']
 
-    data.groupby('task').boxplot(by='workload')
-    # plt.ylim((0, 8))
-    plt.show()
+    data = data.loc[:, ['taskname', 'workload', 'reaction time']]
+    data.dropna(inplace=True)
+    #print(data.groupby(['taskname', 'workload']).describe())
+    groups = data.groupby(['taskname', 'workload'])
+    tasks = ['nback', 'visual search', 'mental rotation']
+    for task in tasks:
+        easy = groups.get_group((task, 'low'))['reaction time'].values
+        hard = groups.get_group((task, 'high'))['reaction time'].values
+        t, prob = ttest_ind(easy, hard, equal_var=False)
+        print("For the task {} the t value is {} and the prob value is {}".format(task, t, prob))

@@ -24,7 +24,7 @@ class VisualSearchSlideFactory(object):
 
     def __init__(self, window):
         self.window = window
-        self.configurations = {}
+        self.configurations = {'taskname':'visual search'}
 
     def configure(self, **kwargs):
         self.configurations.update(**kwargs)
