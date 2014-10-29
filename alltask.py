@@ -102,12 +102,12 @@ if __name__ == "__main__":
     try:
         window = configureWindow()
         logger = configureLogger("testall.log")
-        runEasyNBack(window, logger, 30)
-        runHardNBack(window, logger, 30)
-        runEasyMentalRotation(window, logger, 10)
-        runHardMentalRotation(window, logger, 10)
-        runEasyVisualSearch(window, logger, 10)
-        runHardVisualSearch(window, logger, 10)
+        runEasyNBack(window, logger, 60)
+        runHardNBack(window, logger, 60)
+        runEasyMentalRotation(window, logger, 50)
+        runHardMentalRotation(window, logger, 50)
+        runEasyVisualSearch(window, logger, 50)
+        runHardVisualSearch(window, logger, 50)
     finally:
         window.close()
         logger.save_to_csv()
