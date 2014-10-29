@@ -4,9 +4,10 @@ import experiment_logger as el
 import nback
 import mentalrotation
 import experiment
+import visual_search as vs
 
 def configureWindow():
-    return visual.Window(winType='pyglet', screen=1)
+    return visual.Window(winType='pyglet', screen=1, fullscr=True)
 
 def configureLogger(filename):
     return el.Logger(filename, check_filename=False)
@@ -68,24 +69,45 @@ def runHardMentalRotation(window, logger, n_slides):
     slides = mentalrotation.configure_mr(n_slides, mentalrotation.HARD, 60, 1, window)
     exp.configure(instructions, slides, logger, window)
     exp.run()
+    window.color = 'gray'
+    window.flip()
+    window.flip()
 
 
-def runEasyVisualSearch(window, logger):
-    pass
+def runEasyVisualSearch(window, logger, n_slides):
+    exp = experiment.Experiment()
+    instruction_text = ("Cliquez sur la lettre 'A' le plus rapidement possible.")
+    instructions = experiment.Instructions(instruction_text, 5)
+    slideFactory = vs.VisualSearchSlideFactory(window)
+    slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
+                           target_letter='A', difficulty='low')
+    slides = slideFactory.createSlides(n_slides)
+    exp.configure(instructions, slides, logger, window)
+    exp.run()
 
-def runHardVisualSearch(window, logger):
-    pass
+def runHardVisualSearch(window, logger, n_slides):
+    exp = experiment.Experiment()
+    instruction_text = ("Cliquez sur la voyelle, blanche et non inclinnee le plus rapidement "
+                        "possible.")
+    instructions = experiment.Instructions(instruction_text, 5)
+    slideFactory = vs.VisualSearchSlideFactory(window)
+    slideFactory.configure(n_distractors=40, pausetime=1.0, target_type='vowel',
+                               distractor_colors=2, rotation=15, difficulty='high')
+    slides = slideFactory.createSlides(n_slides)
+    exp.configure(instructions, slides, logger, window)
+    exp.run()
+
 
 if __name__ == "__main__":
     try:
         window = configureWindow()
         logger = configureLogger("testall.log")
-        runEasyNBack(window, logger, 10)
-        runHardNBack(window, logger, 10)
+        runEasyNBack(window, logger, 30)
+        runHardNBack(window, logger, 30)
         runEasyMentalRotation(window, logger, 10)
         runHardMentalRotation(window, logger, 10)
-        runEasyVisualSearch(window, logger)
-        runHardVisualSearch(window, logger)
+        runEasyVisualSearch(window, logger, 10)
+        runHardVisualSearch(window, logger, 10)
     finally:
         window.close()
         logger.save_to_csv()
