@@ -50,10 +50,15 @@ class NBackSlide(AbstractSlide):
         if previous_answer is None:
             previous_answer = (False, False)
         pressed_keys = event.getKeys()
+        if not pressed_keys:
+            return previous_answer
         if 'q' in pressed_keys:
             raise ExitException('The participant wish to exit the application.')
-        target_present = 'm' in pressed_keys or previous_answer[0]
-        target_absent = 'z' in pressed_keys or previous_answer[1]
+        print(pressed_keys)
+        present_keys = ['m', 'n', 'j', 'k', 'l', 'comma', 'period', 'b', 'h']
+        absent_keys = ['a', 's', 'x', u'\xab', 'c', 'd']
+        target_present = previous_answer[0] or any(key in pressed_keys for key in present_keys)
+        target_absent = previous_answer[1] or any(key in pressed_keys for key in absent_keys)
         return target_present, target_absent
 
     def getAnswerValue(self, answers):

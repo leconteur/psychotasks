@@ -45,7 +45,7 @@ class AbstractSlide(object):
 class Instructions(object):
     """Instructions for the current experiment. It will be shown a certain
     amount of time before the start of an exeperiment."""
-    def __init__(self, text, time, color='white'):
+    def __init__(self, text, time=1, color='white'):
         self.text = text
         self.time = time
         self.color = color
@@ -55,9 +55,11 @@ class Instructions(object):
         textstim = visual.TextStim(win, text=self.text, color=self.color)
         textstim.setAutoDraw(True)
         win.flip()
-        core.wait(self.time)
+        event.waitKeys(keyList=['return'])
         textstim.setAutoDraw(False)
         win.flip(clearBuffer=True)
+        core.wait(self.time)
+
 
 
 class Experiment(object):

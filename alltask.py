@@ -24,7 +24,7 @@ def runEasyNBack(window, logger, n_slides):
                         "l'ecran est differente que la lettre precedente, appuyez sur la touche "
                         "'Z'. Dans les deux cas, appuyez le plus rapidement possible.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
-    instructions = experiment.Instructions(instruction_text, 5)
+    instructions = experiment.Instructions(instruction_text)
     exp = experiment.Experiment()
     slides = nback.configure_nback(n_slides, positive_rate, 1, letters, showtime, pausetime,
                                    window)
@@ -43,7 +43,7 @@ def runHardNBack(window, logger, n_slides):
                         "etant apparu sur l'avant derniere diapositive, appuyez sur la touche "
                         "'Z'. Dans les deux cas, appuyez le plus rapidement possible.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
-    instructions = experiment.Instructions(instruction_text, 5)
+    instructions = experiment.Instructions(instruction_text)
     exp = experiment.Experiment()
     slides = nback.configure_nback(n_slides, positive_rate, 2, letters, showtime, pausetime,
                                    window)
@@ -56,7 +56,7 @@ def runEasyMentalRotation(window, logger, n_slides):
                         "touche 'M'. S'il s'agit de deux formes differentes, appuyez sur la "
                         "touche 'Z'. Appuyez le plus rapidement possible.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
-    instructions = experiment.Instructions(instruction_text, 5, color='black')
+    instructions = experiment.Instructions(instruction_text, color='black')
     slides = mentalrotation.configure_mr(n_slides, mentalrotation.EASY, 60, 1, window)
     exp.configure(instructions, slides, logger, window)
     exp.run()
@@ -67,7 +67,7 @@ def runHardMentalRotation(window, logger, n_slides):
                         "touche 'M'. S'il s'agit de deux formes differentes, appuyez sur la "
                         "touche 'Z'. Appuyez le plus rapidement possible.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
-    instructions = experiment.Instructions(instruction_text, 5, color='black')
+    instructions = experiment.Instructions(instruction_text, color='black')
     slides = mentalrotation.configure_mr(n_slides, mentalrotation.HARD, 60, 1, window)
     exp.configure(instructions, slides, logger, window)
     exp.run()
@@ -79,7 +79,7 @@ def runHardMentalRotation(window, logger, n_slides):
 def runEasyVisualSearch(window, logger, n_slides):
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la lettre 'A' le plus rapidement possible.")
-    instructions = experiment.Instructions(instruction_text, 5)
+    instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
                            target_letter='A', workload='low')
@@ -91,7 +91,7 @@ def runHardVisualSearch(window, logger, n_slides):
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la voyelle, blanche et non inclinnee le plus rapidement "
                         "possible.")
-    instructions = experiment.Instructions(instruction_text, 5)
+    instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1.0, target_type='vowel',
                                distractor_colors=2, rotation=15, workload='high')
