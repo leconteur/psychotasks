@@ -17,7 +17,7 @@ def configure_mr(nslides, difficulty, showtime, pausetime, window):
     return slides
 
 class MentalRotationSlide(AbstractSlide):
-    image_folder = "/home/olivier/Downloads/MRT library 882008/white_back/checkered/jpg/{xz}/"
+    image_folder = "../MentalRotationLibrary/white_back/checkered/jpg/{xz}/"
     filename = image_folder + "{image_number}_{xz}_{degree}_{ab}.jpg"
     SAME = 'same'
     DIFFERENT = 'different'
