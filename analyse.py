@@ -25,8 +25,7 @@ def json_to_pandas(generator):
     data = json_normalize(data)
     data = data.set_index('timestamp')
     data.index = data.index.to_datetime()
-    columns_labels = [tuple(c.split('.')) for c in data.columns]
-    data.columns = pd.MultiIndex.from_tuples(columns_labels)
+    data.columns = [col.replace('.', '_') for col in data.columns]
 
     return data
 
@@ -37,26 +36,64 @@ def load_eyetracker(filename):
         tracker_data = filterHeartbeat(jsongen)
         return json_to_pandas(tracker_data)
 
-if __name__ == "__main__":
-    #data = load_eyetracker('results_olivier/loget.txt')
-    data = pd.read_csv('testall.log')
-    data.index = data['timestamp']
 
-    data = data.loc[:, ['taskname', 'workload', 'reaction time']]
-    data.dropna(inplace=True)
-    data['z time'] = data.groupby('taskname').transform(zscore)
-    groups = data.groupby(['taskname', 'workload'])
-    data.boxplot('z time', by=['taskname', 'workload'])
-    plt.show()
-    tasks = ['nback', 'visual search', 'mental rotation']
-    for task in tasks:
-        easy = groups.get_group((task, 'low'))['reaction time']
-        hard = groups.get_group((task, 'high'))['reaction time']
-        #t, prob = ttest_ind(easy.values, hard.values, equal_var=False)
-        l = min(len(easy.values), len(hard.values))
-        easyvalues, hardvalues = easy.values[0:l], hard.values[0:l]
-        #t, pvalue = wilcoxon(easyvalues, hardvalues)
-        t, pvalue = mannwhitneyu(easyvalues, hardvalues)
-        print("For the task {} the t value is {} and the prob value is {}".format(task, t, pvalue))
-        easy = groups.get_group((task, 'low'))
-        hard = groups.get_group((task, 'high'))
+def load_data(filename, taskname):
+    data = pd.read_csv(filename, index_col='timestamp', parse_dates=True)
+    data = data.drop('Unnamed: 0', axis=1)
+    data = data[data.taskname == taskname]
+    data = data.dropna(how='all', axis=1)
+    return data
+
+
+def compute_nback(data):
+    absent = data['participant response'] == 'absent'
+    present = data['participant response'] == 'present'
+    target = data.target
+    correct = (absent & target.ne(True)) | (present & target)
+    rt = data['reaction time']
+    return pd.DataFrame({'correct':correct, 'reaction time':rt, 'workload':data.workload,
+                         'taskname':data.taskname})
+
+
+def compute_mr(data):
+    response = data['participant response'] == 'same'
+    correct = response == data.target
+    rt = data['reaction time']
+    workload = data.workload
+    return pd.DataFrame({'correct':correct, 'reaction time':rt, 'workload':workload,
+                         'taskname':data.taskname})
+
+
+def compute_vs(data):
+    rt = data['reaction time']
+    workload = data.workload
+    return pd.DataFrame({'correct':True, 'reaction time':rt, 'workload':workload,
+                         'taskname':data.taskname})
+
+
+def load_bioharness(filename):
+    columns = ['Time', 'HR', 'BR', 'Posture', 'Activity', 'PeakAccel','BRAmplitude', 'BRNoise',
+               'BRConfidence', 'ECGAmplitude', 'ECGNoise', 'HRConfidence', 'HRV',
+               'SystemConfidence', 'VerticalMin', 'VerticalPeak', 'LateralMin', 'LateralPeak',
+               'SagittalMin', 'SagittalPeak', 'DeviceTemp', 'StatusInfo', 'CoreTemp']
+    na_values = {'HR':{0:np.nan}, 'BR':{6553.5:np.nan}, 'BRAmplitude':{0:np.nan},
+                 'BRNoise':{65535:np.nan}, 'BRConfidence':{255:np.nan}, 'ECGAmplitude':{0:np.nan},
+                 'ECGNoise':{0:np.nan}, 'HRV':{65535:np.nan}, 'CoreTemp':{6553.5:np.nan}}
+    data = pd.read_csv(filename, usecols=columns, index_col='Time', parse_dates=True)
+    data.replace(na_values, inplace=True)
+    return data
+
+if __name__ == "__main__":
+    data_et = load_eyetracker('results_olivier/loget.txt')
+    data_et.replace(0, np.nan, inplace=True)
+    data_nback = load_data('results_olivier/testall.log', 'nback')
+    nback_perf = compute_nback(data_nback)
+    data_mr = load_data('results_olivier/testall.log', 'mental rotation')
+    mr_perf = compute_mr(data_mr)
+    data_vs = load_data('results_olivier/testall.log', 'visual search')
+    vs_perf = compute_vs(data_vs)
+    data = pd.concat([nback_perf, mr_perf, vs_perf])
+    data.workload = pd.Categorical(data.workload, categories=['low', 'high'])
+    data_bh = load_bioharness('results_olivier/bioharness.csv')
+    data = data.resample('S', how='last').join([data_et.resample('S'), data_bh.resample('S')], how='outer')
+    data.columns = [col.replace(' ', '_') for col in data.columns]
