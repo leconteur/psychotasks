@@ -23,6 +23,9 @@ class Logger():
         """Save the data to the csv 'filename'"""
         if self.check_fileconflict():
             raise IOError('Filename already taken')
+        d = os.path.dirname(self.filename)
+        if not os.path.exists(d):
+            os.makedirs(d)
         self.data.to_csv(self.filename, encoding='utf-8')
 
     def check_fileconflict(self):
