@@ -69,12 +69,13 @@ def runHardMentalRotation(window, logger, n_slides):
     slides = mentalrotation.configure_mr(n_slides, mentalrotation.HARD, 60, 1, window)
     exp.configure(instructions, slides, logger, window)
     exp.run()
-    window.color = 'gray'
+    window.setColor('gray')
     window.flip()
     window.flip()
 
 
 def runEasyVisualSearch(window, logger, n_slides):
+    print("Creating visual search task")
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la lettre 'A' le plus rapidement possible.")
     instructions = experiment.Instructions(instruction_text, 5)
@@ -83,6 +84,7 @@ def runEasyVisualSearch(window, logger, n_slides):
                            target_letter='A', workload='low')
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, window)
+    print("Starting easy visual search")
     exp.run()
 
 def runHardVisualSearch(window, logger, n_slides):
@@ -101,9 +103,9 @@ def runHardVisualSearch(window, logger, n_slides):
 if __name__ == "__main__":
     try:
         window = configureWindow()
-        logger = configureLogger("testall.log")
-        runEasyNBack(window, logger, 60)
-        runHardNBack(window, logger, 60)
+        logger = configureLogger("results/testall.log")
+        runEasyNBack(window, logger, 100)
+        runHardNBack(window, logger, 100)
         runEasyMentalRotation(window, logger, 50)
         runHardMentalRotation(window, logger, 50)
         runEasyVisualSearch(window, logger, 50)
