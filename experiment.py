@@ -8,7 +8,6 @@ import datetime
 class ExitException(Exception):
     pass
 
-
 class AbstractSlide(object):
     def __init__(self, showtime, pausetime, configurations, window):
         self.window = window
@@ -71,12 +70,14 @@ class Experiment(object):
         self.wait_time = None
         self.experiment_id = None
         self.win = None
+        self.sentinels = None
 
-    def configure(self, instructions, slides, logger, window):
+    def configure(self, instructions, slides, logger, sentinels, window):
         self.instructions = instructions
         self.slides = slides
         self.logger = logger
         self.win = window
+        self.sentinels = sentinels if sentinels is not None else []
 
     def run(self):
         """Run the preconfigured experiment."""
@@ -84,3 +85,6 @@ class Experiment(object):
         for slide in self.slides:
             ret_val = slide.show()
             self.logger.log_trial(ret_val)
+            for s in self.sentinels:
+                if not s.checkValid():
+                    raise Exception("The {} is disconnected.".format(s.getDeviceName()))
