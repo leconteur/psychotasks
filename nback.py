@@ -56,7 +56,7 @@ class NBackSlide(AbstractSlide):
             raise ExitException('The participant wish to exit the application.')
         print(pressed_keys)
         present_keys = ['m', 'n', 'j', 'k', 'l', 'comma', 'period', 'b', 'h']
-        absent_keys = ['a', 's', 'x', u'\xab', 'c', 'd']
+        absent_keys = ['a', 's', 'x', u'\xab', 'c', 'd', 'z']
         target_present = previous_answer[0] or any(key in pressed_keys for key in present_keys)
         target_absent = previous_answer[1] or any(key in pressed_keys for key in absent_keys)
         return target_present, target_absent
