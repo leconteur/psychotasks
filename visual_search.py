@@ -1,7 +1,6 @@
 from __future__ import print_function
 from psychopy import event, visual
 from experiment import AbstractSlide
-from shapes import Triangle, Square, Circle
 from numpy.linalg import norm
 import numpy as np
 import random
