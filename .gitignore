@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 *.pyc
 =======
 # Byte-compiled / optimized / DLL files
@@ -55,4 +54,3 @@ docs/_build/
 
 # PyBuilder
 target/
->>>>>>> f51c9171e8d6cad072b061ccf8da67ca9ed55d02
