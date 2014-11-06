@@ -24,7 +24,7 @@ class MentalRotationSlide(AbstractSlide):
     OMIT = 'omit'
     BOTH_ANSWERS = 'both answers'
     EASYRANGE = (5, 41, 5)
-    HARDRANGE = (100, 171, 5)
+    HARDRANGE = (125, 171, 5)
 
     def __init__(self, target, difficulty, showtime, pausetime, configurations, window):
         self.difficulty = difficulty
@@ -49,9 +49,13 @@ class MentalRotationSlide(AbstractSlide):
         rightchoice = 'a' if righta else 'b'
         xz = random.choice(['x', 'z'])
         imagenumber = random.randint(1, 16)
-        leftdegree = random.randrange(0, 360, 5)
+        leftdegree = random.randrange(5, 360, 5)
+        if leftdegree == 90 or leftdegree == 180 or leftdegree == 270:
+            leftdegree += 5
         diff = self.getRotation()
         rightdegree = (leftdegree + diff) % 360
+        if rightdegree == 0 or rightdegree == 90 or rightdegree == 180 or rightdegree == 270 or rightdegree == 360:
+            rightdegree = (rightdegree + 5) % 360
         leftfile = self.filename.format(image_number=imagenumber, xz=xz, ab=leftchoice,
                                         degree=leftdegree)
         rightfile = self.filename.format(image_number=imagenumber, xz=xz, ab=rightchoice,
