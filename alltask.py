@@ -138,7 +138,7 @@ if __name__ == "__main__":
                 runHardVisualSearch(window, logger, sentinels, 60)
         elif args.taskname == 'mental_rotation':
             if args.workload == 'practice':
-                runEasyMentalRotation(window, logger, sentinels, 10)
+                runEasyMentalRotation(window, logger, sentinels, 5)
             elif args.workload == 'low':
                 runEasyMentalRotation(window, logger, sentinels, 60)
             elif args.workload == 'high':
@@ -146,4 +146,5 @@ if __name__ == "__main__":
     finally:
         window.close()
         logger.save_to_csv()
-        sentinels[0].close()
+        for s in sentinels:
+            s.close()
