@@ -56,4 +56,6 @@ docs/_build/
 target/
 
 results/
-results_olivier/
+results_olivier*/
+
+*~
