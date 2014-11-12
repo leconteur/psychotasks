@@ -5,6 +5,7 @@ from numpy.linalg import norm
 import numpy as np
 import random
 import string
+import itertools
 
 
 class Letter(visual.TextStim):
@@ -25,6 +26,17 @@ class VisualSearchSlideFactory(object):
     def __init__(self, window):
         self.window = window
         self.configurations = {'taskname':'visual search'}
+        self.targetPosition = self.targetPositionGenerator()
+
+    def targetPositionGenerator(self):
+        positions = [(-0.2, -0.4), (-0.8, -0.2), (-0.3, 0.4), (-0.7, 0.8), (0.1, 0.1), (0.9, 0.3),
+                     (0.5, -0.2), (0.6, -0.4)]
+        while True:
+            random.shuffle(positions)
+            for pos in positions:
+                pos = pos[0] + random.uniform(-0.1, 0.1), pos[1] + random.uniform(-0.1, 0.1)
+                yield pos
+
 
     def configure(self, **kwargs):
         self.configurations.update(**kwargs)
@@ -48,16 +60,18 @@ class VisualSearchSlideFactory(object):
         else:
             text = random.choice(self.TARGETS[self.configurations['target_type']])
         target_color = self.configurations.get('color', 'white')
-        pos = getRandomPos()
+        pos = next(self.targetPosition)
         self.target = Letter(self.window, text=text, pos=pos, color=target_color)
 
     def createDistractors(self):
         self.distractors = []
+        quadrants = itertools.cycle([(1, 1), (1, -1), (-1, -1), (-1, 1)])
         while len(self.distractors) < self.configurations['n_distractors']:
-            self.createDistractor()
+            self.createDistractor(next(quadrants))
 
-    def createDistractor(self):
-        pos = getRandomPos()
+    def createDistractor(self, quadrant):
+        #pos = getRandomPos()
+        pos = random.uniform(0, 0.95) * quadrant[0], random.uniform(0, 0.95) * quadrant[1]
         for dist in self.distractors + [self.target]:
             if norm(dist.pos - pos) < 0.1:
                 return
