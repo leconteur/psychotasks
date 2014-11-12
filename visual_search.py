@@ -29,13 +29,15 @@ class VisualSearchSlideFactory(object):
         self.targetPosition = self.targetPositionGenerator()
 
     def targetPositionGenerator(self):
-        positions = [(-0.2, -0.4), (-0.8, -0.2), (-0.3, 0.4), (-0.7, 0.8), (0.1, 0.1), (0.9, 0.3),
-                     (0.5, -0.2), (0.6, -0.4)]
+        cycle = itertools.cycle([(1, 1), (-1, 1), (1, -1), (-1, -1)])
+        quadrants = list(itertools.islice(cycle, 8))
+
         while True:
-            random.shuffle(positions)
-            for pos in positions:
-                pos = pos[0] + random.uniform(-0.1, 0.1), pos[1] + random.uniform(-0.1, 0.1)
-                yield pos
+            random.shuffle(quadrants)
+            for quad in quadrants:
+                posx = random.uniform(0, 0.95) * quad[0]
+                posy = random.uniform(0, 0.95) * quad[1]
+                yield posx, posy
 
 
     def configure(self, **kwargs):
@@ -51,6 +53,7 @@ class VisualSearchSlideFactory(object):
     def createSlide(self):
         self.createTarget()
         self.createDistractors()
+        self.configurations['target_letter'] = self.target.text
         return VisualSearchSlide(self.target, self.distractors, self.configurations['pausetime'],
                                  self.configurations, self.window)
 
