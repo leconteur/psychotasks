@@ -6,6 +6,7 @@ import numpy as np
 import random
 import string
 import itertools
+import copy
 
 
 class Letter(visual.TextStim):
@@ -20,7 +21,7 @@ class VisualSearchSlideFactory(object):
     TARGET_TYPES = ["vowel", "consonnant", "letter"]
 
     # The O was confusing
-    TARGETS = {"vowel":list("AEIUY"), "consonnant":list("BCDFGHJKLMNPQRSTVWXZ")}
+    TARGETS = {"vowel":list("AEIU"), "consonnant":list("BCDFGHJKLMNPQRSTVWXZ")}
     COLORS = ['white', 'black', 'red', 'green', 'blue']
 
     def __init__(self, window):
@@ -54,8 +55,11 @@ class VisualSearchSlideFactory(object):
         self.createTarget()
         self.createDistractors()
         self.configurations['target_letter'] = self.target.text
+        self.configurations['target_pos_x'] = self.target.pos[0]
+        self.configurations['target_pos_y'] = self.target.pos[1]
+        configs = copy.deepcopy(self.configurations)
         return VisualSearchSlide(self.target, self.distractors, self.configurations['pausetime'],
-                                 self.configurations, self.window)
+                                 configs, self.window)
 
     def createTarget(self):
         if self.configurations['target_type'] == "letter":
