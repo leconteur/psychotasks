@@ -20,7 +20,7 @@ class ConfigurationError(Exception): pass
 class VisualSearchSlideFactory(object):
     TARGET_TYPES = ["vowel", "consonnant", "letter"]
 
-    # The O was confusing
+    # The O was confusing and the Y was harder then the other letters
     TARGETS = {"vowel":list("AEIU"), "consonnant":list("BCDFGHJKLMNPQRSTVWXZ")}
     COLORS = ['white', 'black', 'red', 'green', 'blue']
 
@@ -82,7 +82,7 @@ class VisualSearchSlideFactory(object):
         for dist in self.distractors + [self.target]:
             if norm(dist.pos - pos) < 0.1:
                 return
-        text = random.choice(string.ascii_uppercase.replace('O', ''))
+        text = random.choice(string.ascii_uppercase.replace('O', '').replace('Y', ''))
         color = random.choice(self.COLORS[0:self.configurations.get('distractor_colors', 1)])
         rotation = random.choice([-1, 0, 1]) * self.configurations.get('rotation', 0)
         distractor = Letter(self.window, text=text, pos=pos, color=color, ori=rotation)
