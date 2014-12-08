@@ -10,7 +10,7 @@ import eyetribesentinel
 
 
 def configureWindow(scr):
-    return visual.Window(winType='pyglet', screen=scr, fullscr=True)
+    return visual.Window(screen=scr, fullscr=True)
 
 def configureLogger(filename, check_filename):
     return el.Logger(filename, check_filename=False)
