@@ -1,11 +1,12 @@
 from __future__ import print_function
-from psychopy import visual, event
+from psychopy import visual, event, sound
 from experiment import ExitException, AbstractSlide, Instructions, Experiment
 import random
 import experiment_logger as el
 
 
-def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, window):
+def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, sound_probability,
+                    window):
     """Configure a nback experiment. Returns the chosen value for each trial and
     the target value."""
 
@@ -26,7 +27,7 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, w
         configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
                    'positives':positives, 'target':target, 'taskname':'nback',
                    'workload':workload}
-        slide = NBackSlide(choice, target, showtime, pausetime, configs, window)
+        slide = NBackSlide(choice, target, sound_probability, showtime, pausetime, configs, window)
         slides.append(slide)
     return slides
 
@@ -37,10 +38,13 @@ class NBackSlide(AbstractSlide):
     OMIT = 'omit'
     BOTH_ANSWERS = 'both answers'
 
-    def __init__(self, value, target, showtime, pausetime, configurations, window):
+    def __init__(self, value, target, sound_probability, showtime, pausetime,
+                 configurations, window):
         self.textstim = visual.TextStim(window, value)
         self.value = value
         self.target = target
+        self.sound_probability = sound_probability
+        self.sound = sound.Sound(440*3, pausetime)
         super(NBackSlide, self).__init__(showtime, pausetime, configurations, window)
 
     def draw(self):
@@ -72,6 +76,25 @@ class NBackSlide(AbstractSlide):
             ans = self.OMIT
         return {'participant response':ans}
 
+    def play_sound(self, answers):
+        if self.good_answer(answers):
+            print("RIGHT")
+            return False
+        else:
+            print("WRONG")
+            if random.random() < self.sound_probability:
+                self.sound.play()
+                return True
+            return False
+
+
+    def good_answer(self, answers):
+        if answers[0] and self.target:
+            return True
+        elif answers[1] and not self.target:
+            return True
+        else:
+            return False
 
 if __name__ == "__main__":
     letters = 'bcdfgljllmnplrstvwxz'
@@ -84,7 +107,8 @@ if __name__ == "__main__":
 
     easy_instructions = Instructions("1-back", 4)
     easy_experiment = Experiment()
-    easy_slides = configure_nback(nslides, positive_rate, 1, letters, showtime, pausetime, window)
+    easy_slides = configure_nback(nslides, positive_rate, 1, 0.5,
+                                  letters, showtime, pausetime, window)
     easy_experiment.configure(easy_instructions, easy_slides, logger, window)
 
     hard_instructions = Instructions("2-back", 4)

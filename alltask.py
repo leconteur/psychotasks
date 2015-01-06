@@ -15,7 +15,7 @@ def configureWindow(scr):
 def configureLogger(filename, check_filename):
     return el.Logger(filename, check_filename=False)
 
-def runEasyNBack(window, logger, sentinels, n_slides):
+def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
     letters = 'bcdfghjklmnpqrstvwxz'
     showtime = 1.5
     pausetime = 0.5
@@ -28,12 +28,12 @@ def runEasyNBack(window, logger, sentinels, n_slides):
     instructions = experiment.Instructions(instruction_text)
     exp = experiment.Experiment()
     slides = nback.configure_nback(n_slides, positive_rate, 1, letters, showtime, pausetime,
-                                   window)
+                                   sound_prob, window)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
 
 
-def runHardNBack(window, logger, sentinels, n_slides):
+def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
     letters = 'bcdfghjklmnpqrstvwxz'
     showtime = 1.5
     pausetime = 0.5
@@ -47,7 +47,7 @@ def runHardNBack(window, logger, sentinels, n_slides):
     instructions = experiment.Instructions(instruction_text)
     exp = experiment.Experiment()
     slides = nback.configure_nback(n_slides, positive_rate, 2, letters, showtime, pausetime,
-                                   window)
+                                   sound_prob, window)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
 
@@ -124,11 +124,11 @@ if __name__ == "__main__":
     try:
         if args.taskname == 'nback':
             if args.workload == 'practice':
-                runEasyNBack(window, logger, sentinels, 10)
+                runEasyNBack(window, logger, sentinels, 10, 0.3)
             elif args.workload == 'low':
-                runEasyNBack(window, logger, sentinels, 60)
+                runEasyNBack(window, logger, sentinels, 60, 0)
             elif args.workload == 'high':
-                runHardNBack(window, logger, sentinels, 60)
+                runHardNBack(window, logger, sentinels, 60, 0)
         elif args.taskname == 'visual_search':
             if args.workload == 'practice':
                 runEasyVisualSearch(window, logger, sentinels, 10)

@@ -33,13 +33,18 @@ class AbstractSlide(object):
             total_time = None
         self.window.flip(clearBuffer=True)
         core.wait(self.pausetime)
+        sound = self.play_sound(answers)
         ans = self.getAnswerValue(answers)
-        ans.update({'reaction time':total_time, 'timestamp':timestamp})
+        ans.update({'reaction time':total_time, 'timestamp':timestamp, 'sound_played':sound})
         ans.update(self.configurations)
         return ans
 
     def stoploop(self, frame):
         return frame > self.max_frame
+
+    def play_sound(self, answers):
+        print("BEEEEEEEEEP")
+        return False
 
 class Instructions(object):
     """Instructions for the current experiment. It will be shown a certain
