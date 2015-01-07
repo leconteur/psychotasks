@@ -58,4 +58,7 @@ target/
 results/
 results_olivier*/
 
+.idea/
+.ropeproject/
+
 *~
