@@ -83,7 +83,7 @@ def runEasyVisualSearch(window, logger, sentinels, n_slides):
     instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
-                           target_letter='A', workload='low')
+                           target_letter='A', workload='low', sound_probability=1)
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()

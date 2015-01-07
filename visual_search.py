@@ -1,5 +1,5 @@
 from __future__ import print_function
-from psychopy import event, visual
+from psychopy import event, visual, sound
 from experiment import AbstractSlide
 from numpy.linalg import norm
 import numpy as np
@@ -58,7 +58,8 @@ class VisualSearchSlideFactory(object):
         self.configurations['target_pos_x'] = self.target.pos[0]
         self.configurations['target_pos_y'] = self.target.pos[1]
         configs = copy.deepcopy(self.configurations)
-        return VisualSearchSlide(self.target, self.distractors, self.configurations['pausetime'],
+        return VisualSearchSlide(self.target, self.configurations.get('sound_probability', 0),
+                                 self.distractors, self.configurations['pausetime'],
                                  configs, self.window)
 
     def createTarget(self):
@@ -112,12 +113,16 @@ def contains(shapelist, shape):
 
 
 class VisualSearchSlide(AbstractSlide):
-    def __init__(self, target, distractors, pausetime, configurations, window):
+    def __init__(self, target, sound_probability, distractors, pausetime, configurations, window):
         super(VisualSearchSlide, self).__init__(600, pausetime, configurations, window)
         self.mouse = event.Mouse()
         self.target = target
         self.distractors = distractors
         self.response = False
+        self.already_played = False
+        self.sound_time = 1.5
+        self.sound_probability = sound_probability
+        self.sound = sound.Sound(440, pausetime)
 
     def draw(self):
         self.target.draw(self.window)
@@ -128,12 +133,18 @@ class VisualSearchSlide(AbstractSlide):
         self.response = self.mouse.isPressedIn(self.target)
         return (self.response, )
 
-    def stoploop(self, frame):
+    def stoploop(self):
         return self.response
 
     def getAnswerValue(self, answer):
         return {'pressed':True}
 
+    def play_sound(self, answers):
+        if not self.already_played and self.current_time() > self.sound_time:
+            self.already_played = True
+            if random.random() < self.sound_probability:
+                self.sound.play()
+                self.sound_played = True
 
 def main_letters():
     from experiment import Instructions, Experiment

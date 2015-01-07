@@ -15,36 +15,50 @@ class AbstractSlide(object):
         self.max_frame = showtime/self.framerate
         self.pausetime = pausetime
         self.configurations = configurations
+        self.sound_played = False
+        self.timestamp = 0
+        self.i_frame = 0
+        self.final_frame = 0
+        self.answered = False
 
     def show(self):
-        timestamp = datetime.datetime.fromtimestamp(time.time())
+        self.timestamp = datetime.datetime.fromtimestamp(time.time())
         event.clearEvents()
-        i_frame = 0
-        total_time = False
         answers = None
-        while not self.stoploop(i_frame):
+        while not self.stoploop():
             self.draw()
             self.window.flip()
             answers = self.getAnswer(answers)
-            if any(answers) and total_time is False:
-                total_time = i_frame * self.framerate
-            i_frame += 1
-        if total_time is False:
-            total_time = None
+            if any(answers) and not self.answered:
+                self.answered = True
+                self.final_frame = self.i_frame
+            sound = self.play_sound(answers)
+            self.i_frame += 1
         self.window.flip(clearBuffer=True)
         core.wait(self.pausetime)
-        sound = self.play_sound(answers)
+        return self.getOutput(answers)
+
+    def getOutput(self, answers):
         ans = self.getAnswerValue(answers)
-        ans.update({'reaction time':total_time, 'timestamp':timestamp, 'sound_played':sound})
+        ans.update({'reaction time':self.total_time(), 'timestamp':self.timestamp,
+                    'sound_played':self.sound_played})
         ans.update(self.configurations)
         return ans
 
-    def stoploop(self, frame):
-        return frame > self.max_frame
+    def stoploop(self):
+        return self.i_frame > self.max_frame
 
     def play_sound(self, answers):
         print("BEEEEEEEEEP")
         return False
+
+    def current_time(self):
+        return self.i_frame * self.framerate
+
+    def total_time(self):
+        if not self.answered:
+            return None
+        return self.final_frame * self.framerate
 
 class Instructions(object):
     """Instructions for the current experiment. It will be shown a certain

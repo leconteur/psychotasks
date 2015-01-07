@@ -44,7 +44,8 @@ class NBackSlide(AbstractSlide):
         self.value = value
         self.target = target
         self.sound_probability = sound_probability
-        self.sound = sound.Sound(440*3, pausetime)
+        self.already_played = False
+        self.sound = sound.Sound(440, pausetime)
         super(NBackSlide, self).__init__(showtime, pausetime, configurations, window)
 
     def draw(self):
@@ -77,15 +78,15 @@ class NBackSlide(AbstractSlide):
         return {'participant response':ans}
 
     def play_sound(self, answers):
-        if self.good_answer(answers):
-            print("RIGHT")
-            return False
-        else:
-            print("WRONG")
-            if random.random() < self.sound_probability:
-                self.sound.play()
-                return True
-            return False
+        if not self.already_played and self.answered:
+            self.already_played = True
+            if self.good_answer(answers):
+                print("RIGHT")
+            else:
+                print("WRONG")
+                if random.random() < self.sound_probability:
+                    self.sound.play()
+                    self.sound_played = True
 
 
     def good_answer(self, answers):
