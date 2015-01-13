@@ -49,7 +49,6 @@ class AbstractSlide(object):
         return self.i_frame > self.max_frame
 
     def play_sound(self, answers):
-        print("BEEEEEEEEEP")
         return False
 
     def current_time(self):
