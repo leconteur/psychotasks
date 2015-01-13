@@ -19,7 +19,7 @@ def configureLogger(filename, check_filename):
 
 def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 1.5
+    showtime = 2.0
     pausetime = 0.5
     positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
@@ -38,7 +38,7 @@ def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
 
 def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 1.5
+    showtime = 2.0
     pausetime = 0.5
     positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "

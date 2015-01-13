@@ -12,9 +12,9 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, s
 
     slides = []
     for i in range(n_trials):
-        if i < 3:  # There is no target in the first 3 sample
+        if i < n_back:  # There is no target in the first 3 sample
             choice = random.choice(choices)
-            target = False
+            target = None
         else:
             choice = slides[i-n_back].value
             if random.random() < positives:
@@ -90,6 +90,8 @@ class NBackSlide(AbstractSlide):
 
 
     def good_answer(self, answers):
+        if self.target is None:
+            return True
         if answers[0] and self.target:
             return True
         elif answers[1] and not self.target:
