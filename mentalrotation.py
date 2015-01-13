@@ -75,7 +75,7 @@ class MentalRotationSlide(AbstractSlide):
 
 
 
-    def stoploop(self, frame):
+    def stoploop(self):
         return self.response
 
     def draw(self):
