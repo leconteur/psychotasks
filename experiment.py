@@ -11,7 +11,7 @@ class ExitException(Exception):
 class AbstractSlide(object):
     def __init__(self, showtime, pausetime, configurations, window):
         self.window = window
-        self.framerate = 1.0/60.0
+        self.framerate = 1.0/window.getActualFrameRate()
         self.max_frame = showtime/self.framerate
         self.pausetime = pausetime
         self.configurations = configurations
