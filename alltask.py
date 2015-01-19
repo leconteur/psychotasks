@@ -120,16 +120,20 @@ if __name__ == "__main__":
                         help="The workload level for the experimental condition.")
     parser.add_argument('participantNumber', help="The participant number.")
     parser.add_argument('--practice', action='store_true', help="Only do a subset of the task")
-    parser.add_argument('--soundprob', type=float, default=0.0,
+    parser.add_argument('--soundprobwrong', type=float, default=0.0,
                         help=("The probability that a sound will be played if the wrong answer is "
                               "given or that the answer is not provided soon enough. This must be "
                               "a number between 0 and 1."))
+    parser.add_argument('--soundprobright', type=float, default=0.0,
+                        help=("The probability that a sound will be played if the right answer is "
+                              "given. This must be a number between 0 and 1."))
     parser.add_argument('--scr', type=int, default=1,
                         help="The screen (0 or 1) on which the experiment will run.")
     parser.add_argument('--noeyetracker', action="store_true",
                         help=("Use this option if you do not wish to check if the eyetracker "
                               "is functionnal."))
     args = parser.parse_args()
+    args.soundprob = (args.soundprobright, args.soundprobwrong)
     logfile = "results/" + args.participantNumber + "/"
     logfile += args.taskname + "_" + args.workload + ".log"
     checkfilename = args.workload != 'practice'
@@ -147,10 +151,12 @@ if __name__ == "__main__":
             elif args.workload == 'high':
                 runHardNBack(window, logger, sentinels, ntrials, args.soundprob)
         elif args.taskname == 'visual_search':
+            if args.soundprobright != 0.0:
+                raise NotImplementedError("The sound probability is only for wrong values")
             if args.workload == 'low':
-                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprob)
+                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
             elif args.workload == 'high':
-                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprob)
+                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
         elif args.taskname == 'mental_rotation':
             if args.soundprob != 0.0:
                 raise NotImplementedError('The sound playing is not implemented for this task.')

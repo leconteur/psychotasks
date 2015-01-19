@@ -82,9 +82,12 @@ class NBackSlide(AbstractSlide):
             self.already_played = True
             if self.good_answer(answers):
                 print("RIGHT")
+                if random.random() < self.sound_probability[0]:
+                    self.sound.play()
+                    self.sound_played = True
             else:
                 print("WRONG")
-                if random.random() < self.sound_probability:
+                if random.random() < self.sound_probability[1]:
                     self.sound.play()
                     self.sound_played = True
 
