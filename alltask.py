@@ -129,17 +129,20 @@ if __name__ == "__main__":
                               "given. This must be a number between 0 and 1."))
     parser.add_argument('--scr', type=int, default=1,
                         help="The screen (0 or 1) on which the experiment will run.")
-    parser.add_argument('--noeyetracker', action="store_true",
+    parser.add_argument('--eyetracker', action="store_true",
                         help=("Use this option if you do not wish to check if the eyetracker "
                               "is functionnal."))
     args = parser.parse_args()
     args.soundprob = (args.soundprobright, args.soundprobwrong)
     logfile = "results/" + args.participantNumber + "/"
-    logfile += args.taskname + "_" + args.workload + ".log"
+    logfile += args.taskname + "_" + args.workload
+    if args.practice:
+        logfile += "_practice"
+    logfile += ".log"
     checkfilename = args.workload != 'practice'
     logger = configureLogger(logfile, checkfilename)
     window = configureWindow(args.scr)
-    if args.noeyetracker is False:
+    if args.eyetracker is True:
         sentinels = [eyetribesentinel.EyetribeSentinel()]
     else:
         sentinels = []
