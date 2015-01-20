@@ -100,13 +100,13 @@ def runEasyVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtim
 
 def runHardVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtime):
     exp = experiment.Experiment()
-    instruction_text = ("Cliquez sur la voyelle non inclinnee le plus rapidement "
+    instruction_text = ("Cliquez sur la voyelle (A,E,I,O,U,Y) non inclinnee le plus rapidement "
                         "possible.\nAppuyez sur 'entree' pour commencer.")
     instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1.0, target_type='vowel',
                            distractor_colors=1, rotation=15, workload='high',
-                           sound_probability=soundprob)
+                           sound_probability=soundprob, soundtime=soundtime)
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
