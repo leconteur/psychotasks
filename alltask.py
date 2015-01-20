@@ -160,7 +160,7 @@ if __name__ == "__main__":
             elif args.workload == 'high':
                 runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
         elif args.taskname == 'mental_rotation':
-            if args.soundprob != 0.0:
+            if args.soundprob != (0.0, 0.0):
                 raise NotImplementedError('The sound playing is not implemented for this task.')
             if args.workload == 'low':
                 runEasyMentalRotation(window, logger, sentinels, ntrials)
