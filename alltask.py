@@ -84,20 +84,21 @@ def runHardMentalRotation(window, logger, sentinels, n_slides):
     window.flip()
 
 
-def runEasyVisualSearch(window, logger, sentinels, n_slides, soundprob):
+def runEasyVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtime):
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la lettre 'A' le plus rapidement possible.\nAppuyez sur "
                         "'entree' pour commencer")
     instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
-                           target_letter='A', workload='low', sound_probability=soundprob)
+                           target_letter='A', workload='low', sound_probability=soundprob,
+                           soundtime=soundtime)
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
 
 
-def runHardVisualSearch(window, logger, sentinels, n_slides, soundprob):
+def runHardVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtime):
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la voyelle non inclinnee le plus rapidement "
                         "possible.\nAppuyez sur 'entree' pour commencer.")
@@ -126,6 +127,9 @@ if __name__ == "__main__":
     parser.add_argument('--soundprobright', type=float, default=0.0,
                         help=("The probability that a sound will be played if the right answer is "
                               "given. This must be a number between 0 and 1."))
+    parser.add_argument('--soundtime', type=float, default=2.0,
+                        help=("The time threshold from which a sound can be played in the visual "
+                              "search task."))
     parser.add_argument('--scr', type=int, default=1,
                         help="The screen (0 or 1) on which the experiment will run.")
     parser.add_argument('--eyetracker', action="store_true",
@@ -156,9 +160,9 @@ if __name__ == "__main__":
             if args.soundprobright != 0.0:
                 raise NotImplementedError("The sound probability is only for wrong values")
             if args.workload == 'low':
-                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
+                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
             elif args.workload == 'high':
-                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
+                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
         elif args.taskname == 'mental_rotation':
             if args.soundprob != (0.0, 0.0):
                 raise NotImplementedError('The sound playing is not implemented for this task.')
