@@ -154,15 +154,15 @@ if __name__ == "__main__":
             elif args.workload == 'high':
                 runHardNBack(window, logger, sentinels, ntrials, args.soundprob)
         elif args.taskname == 'visual_search':
-            if args.soundprobright != 0.0:
-                raise NotImplementedError("The sound probability is only for wrong values")
+            #if args.soundprobright != 0.0:
+            #    raise NotImplementedError("The sound probability is only for wrong values")
             if args.workload == 'low':
                 runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
             elif args.workload == 'high':
                 runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
         elif args.taskname == 'mental_rotation':
-            if args.soundprob != 0.0:
-                raise NotImplementedError('The sound playing is not implemented for this task.')
+            #if args.soundprob != 0.0:
+            #    raise NotImplementedError('The sound playing is not implemented for this task.')
             if args.workload == 'low':
                 runEasyMentalRotation(window, logger, sentinels, ntrials)
             elif args.workload == 'high':
