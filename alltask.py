@@ -17,7 +17,7 @@ def configureLogger(filename, check_filename):
     return el.Logger(filename, check_filename=False)
 
 
-def runEasyNBack(window, logger, sentinels, n_slides, sound_prob, showtime=2.0, pausetime=0.5, positive_rate=0.3):
+def runEasyNBack(window, logger, sentinels, n_slides, sound_prob, showtime, pausetime, positive_rate=0.3):
     letters = 'bcdfghjklmnpqrstvwxz'
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
                         "precedente, appuyez sur la touche 'M'. \n\n"
@@ -129,6 +129,11 @@ if __name__ == "__main__":
     parser.add_argument('--eyetracker', action="store_true",
                         help=("Use this option if you do not wish to check if the eyetracker "
                               "is functionnal."))
+    parser.add_argument('--pausetime', type=float, default=0.5,
+                        help="The waiting time between trials (nback)")
+    parser.add_argument('--showtime', type=float, default=2,
+                        help="The showing time for each trials (nback)")
+
     args = parser.parse_args()
     args.soundprob = (args.soundprobright, args.soundprobwrong)
     logfile = "results/" + args.participantNumber + "/"
@@ -147,9 +152,9 @@ if __name__ == "__main__":
         ntrials = 10 if args.practice else 60
         if args.taskname == 'nback':
             if args.workload == 'low':
-                runEasyNBack(window, logger, sentinels, ntrials, args.soundprob)
+                runEasyNBack(window, logger, sentinels, ntrials, args.soundprob, args.showtime, args.pausetime, positive_rate=0.5)
             elif args.workload == 'high':
-                runHardNBack(window, logger, sentinels, ntrials, args.soundprob)
+                runHardNBack(window, logger, sentinels, ntrials, args.soundprob, args.showtime, args.pausetime, positive_rate=0.5)
         elif args.taskname == 'visual_search':
             #if args.soundprobright != 0.0:
             #    raise NotImplementedError("The sound probability is only for wrong values")
