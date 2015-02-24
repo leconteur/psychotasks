@@ -17,11 +17,8 @@ def configureLogger(filename, check_filename):
     return el.Logger(filename, check_filename=False)
 
 
-def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
+def runEasyNBack(window, logger, sentinels, n_slides, sound_prob, showtime=2.0, pausetime=0.5, positive_rate=0.3):
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 2.0
-    pausetime = 0.5
-    positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
                         "precedente, appuyez sur la touche 'M'. \n\n"
                         "Sinon, appuyez sur la touche 'Z'.\n\n"
@@ -36,11 +33,8 @@ def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
     exp.run()
 
 
-def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
+def runHardNBack(window, logger, sentinels, n_slides, sound_prob, showtime=2.0, pausetime=0.5, positive_rate=0.3):
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 2.0
-    pausetime = 0.5
-    positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que l'avant derniere "
                         "lettre, appuyez sur la touche 'M'. \n\n"
                         "Sinon, appuyez sur la touche 'Z'.\n\n"
