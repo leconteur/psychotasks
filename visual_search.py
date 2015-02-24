@@ -120,7 +120,7 @@ class VisualSearchSlide(AbstractSlide):
         self.distractors = distractors
         self.response = False
         self.already_played = False
-        self.sound_time = 1.5
+        self.sound_time = configurations['soundtime']
         self.sound_probability = sound_probability
         self.sound = sound.Sound(440, pausetime)
 

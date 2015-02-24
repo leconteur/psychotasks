@@ -40,7 +40,9 @@ class NBackSlide(AbstractSlide):
 
     def __init__(self, value, target, sound_probability, showtime, pausetime,
                  configurations, window):
-        self.textstim = visual.TextStim(window, value)
+        self.textstim = visual.TextStim(window, value, height=0.15)
+        self.reminder = visual.TextStim(window, text="Pareil: 'M'\nDifferent: 'Z'",
+                                        pos=(-0.85, -0.90), height=0.04)
         self.value = value
         self.target = target
         self.sound_probability = sound_probability
@@ -50,6 +52,7 @@ class NBackSlide(AbstractSlide):
 
     def draw(self):
         self.textstim.draw(self.window)
+        self.reminder.draw(self.window)
 
     def getAnswer(self, previous_answer):
         if previous_answer is None:

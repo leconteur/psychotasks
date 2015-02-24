@@ -41,6 +41,8 @@ class MentalRotationSlide(AbstractSlide):
         self.rightimage.setSize(1, units='norm')
         self.rightimage.setPos((0.5, 0))
         self.response = False
+        self.reminder = visual.TextStim(window, text="Pareil: 'M'\nDifferent: 'Z'",
+                                        pos=(-0.85, -0.90), height=0.04, color='black')
 
     def configureSlide(self):
         lefta = random.choice([True, False])
@@ -81,6 +83,7 @@ class MentalRotationSlide(AbstractSlide):
     def draw(self):
         self.leftimage.draw(self.window)
         self.rightimage.draw(self.window)
+        self.reminder.draw(self.window)
 
     def getAnswer(self, previous_answer):
         if previous_answer is None:

@@ -23,9 +23,9 @@ def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
     pausetime = 0.5
     positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
-                        "precedente, appuyez sur la touche 'M'. Si la lettre apparaissant a "
-                        "l'ecran est differente que la lettre precedente, appuyez sur la touche "
-                        "'Z'. Dans les deux cas, appuyez le plus rapidement possible.\n"
+                        "precedente, appuyez sur la touche 'M'. \n\n"
+                        "Sinon, appuyez sur la touche 'Z'.\n\n"
+                        "Dans les deux cas, appuyez le plus rapidement possible.\n\n"
                         "Appuyez sur 'entree' pour commencer.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
     instructions = experiment.Instructions(instruction_text)
@@ -41,11 +41,10 @@ def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
     showtime = 2.0
     pausetime = 0.5
     positive_rate = 0.3
-    instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
-                        "etant apparu sur l'avant derniere diapositive, appuyez sur la touche 'M'."
-                        "Si la lettre apparaissant a l'ecran est differente que la lettre "
-                        "etant apparu sur l'avant derniere diapositive, appuyez sur la touche "
-                        "'Z'. Dans les deux cas, appuyez le plus rapidement possible.\n"
+    instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que l'avant derniere "
+                        "lettre, appuyez sur la touche 'M'. \n\n"
+                        "Sinon, appuyez sur la touche 'Z'.\n\n"
+                        "Dans les deux cas, appuyez le plus rapidement possible.\n\n"
                         "Appuyez sur 'entree' pour commencer.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
     instructions = experiment.Instructions(instruction_text)
@@ -59,8 +58,8 @@ def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
 def runEasyMentalRotation(window, logger, sentinels, n_slides):
     exp = experiment.Experiment()
     instruction_text = ("Si les deux images sont une rotation de la meme forme, appuyez sur la "
-                        "touche 'M'. S'il s'agit de deux formes differentes, appuyez sur la "
-                        "touche 'Z'. Appuyez le plus rapidement possible."
+                        "touche 'M'.\n\nSinon, appuyez sur la "
+                        "touche 'Z'.\n\nAppuyez le plus rapidement possible."
                         "\nAppuyez sur 'entree' pour commencer.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
     instructions = experiment.Instructions(instruction_text, color='black')
@@ -72,8 +71,8 @@ def runEasyMentalRotation(window, logger, sentinels, n_slides):
 def runHardMentalRotation(window, logger, sentinels, n_slides):
     exp = experiment.Experiment()
     instruction_text = ("Si les deux images sont une rotation de la meme forme, appuyez sur la "
-                        "touche 'M'. S'il s'agit de deux formes differentes, appuyez sur la "
-                        "touche 'Z'. Appuyez le plus rapidement possible."
+                        "touche 'M'.\n\nSinon, appuyez sur la "
+                        "touche 'Z'.\n\nAppuyez le plus rapidement possible."
                         "\nAppuyez sur 'entree' pour commencer.")
     instruction_text = instruction_text.decode("utf-8").encode("ascii", "replace")
     instructions = experiment.Instructions(instruction_text, color='black')
@@ -85,28 +84,29 @@ def runHardMentalRotation(window, logger, sentinels, n_slides):
     window.flip()
 
 
-def runEasyVisualSearch(window, logger, sentinels, n_slides, soundprob):
+def runEasyVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtime):
     exp = experiment.Experiment()
     instruction_text = ("Cliquez sur la lettre 'A' le plus rapidement possible.\nAppuyez sur "
                         "'entree' pour commencer")
     instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1, target_type='letter',
-                           target_letter='A', workload='low', sound_probability=soundprob)
+                           target_letter='A', workload='low', sound_probability=soundprob,
+                           soundtime=soundtime)
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
 
 
-def runHardVisualSearch(window, logger, sentinels, n_slides, soundprob):
+def runHardVisualSearch(window, logger, sentinels, n_slides, soundprob, soundtime):
     exp = experiment.Experiment()
-    instruction_text = ("Cliquez sur la voyelle, blanche et non inclinnee le plus rapidement "
+    instruction_text = ("Cliquez sur la voyelle (A,E,I,O,U,Y) non inclinnee le plus rapidement "
                         "possible.\nAppuyez sur 'entree' pour commencer.")
     instructions = experiment.Instructions(instruction_text)
     slideFactory = vs.VisualSearchSlideFactory(window)
     slideFactory.configure(n_distractors=40, pausetime=1.0, target_type='vowel',
                            distractor_colors=1, rotation=15, workload='high',
-                           sound_probability=soundprob)
+                           sound_probability=soundprob, soundtime=soundtime)
     slides = slideFactory.createSlides(n_slides)
     exp.configure(instructions, slides, logger, sentinels, window)
     exp.run()
@@ -127,6 +127,9 @@ if __name__ == "__main__":
     parser.add_argument('--soundprobright', type=float, default=0.0,
                         help=("The probability that a sound will be played if the right answer is "
                               "given. This must be a number between 0 and 1."))
+    parser.add_argument('--soundtime', type=float, default=2.0,
+                        help=("The time threshold from which a sound can be played in the visual "
+                              "search task."))
     parser.add_argument('--scr', type=int, default=1,
                         help="The screen (0 or 1) on which the experiment will run.")
     parser.add_argument('--eyetracker', action="store_true",
@@ -157,12 +160,17 @@ if __name__ == "__main__":
             #if args.soundprobright != 0.0:
             #    raise NotImplementedError("The sound probability is only for wrong values")
             if args.workload == 'low':
-                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
+                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
             elif args.workload == 'high':
-                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong)
+                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
         elif args.taskname == 'mental_rotation':
+<<<<<<< HEAD
             #if args.soundprob != 0.0:
             #    raise NotImplementedError('The sound playing is not implemented for this task.')
+=======
+            if args.soundprob != (0.0, 0.0):
+                raise NotImplementedError('The sound playing is not implemented for this task.')
+>>>>>>> origin/master
             if args.workload == 'low':
                 runEasyMentalRotation(window, logger, sentinels, ntrials)
             elif args.workload == 'high':
