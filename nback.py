@@ -24,9 +24,9 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, s
                     choice = random.choice(choices)
                 target = False
         workload = 'low' if n_back <= 1 else 'high'
-        configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
-                   'positives':positives, 'target':target, 'taskname':'nback',
-                   'workload':workload}
+        configs = {'n_back': n_back, 'showtime': showtime, 'pausetime': pausetime,
+                   'positives': positives, 'target': target, 'taskname': 'nback',
+                   'workload': workload}
         slide = NBackSlide(choice, target, sound_probability, showtime, pausetime, configs, window)
         slides.append(slide)
     return slides
@@ -47,7 +47,7 @@ class NBackSlide(AbstractSlide):
         self.target = target
         self.sound_probability = sound_probability
         self.already_played = False
-        self.sound = sound.Sound(440, pausetime)
+        self.sound = sound.Sound('audio/stress.wav', pausetime)
         super(NBackSlide, self).__init__(showtime, pausetime, configurations, window)
 
     def draw(self):
@@ -78,7 +78,7 @@ class NBackSlide(AbstractSlide):
             ans = self.ABSENT
         else:
             ans = self.OMIT
-        return {'participant response':ans}
+        return {'participant response': ans}
 
     def play_sound(self, answers):
         if not self.already_played and self.answered:
@@ -93,7 +93,6 @@ class NBackSlide(AbstractSlide):
                 if random.random() < self.sound_probability[1]:
                     self.sound.play()
                     self.sound_played = True
-
 
     def good_answer(self, answers):
         if self.target is None:
