@@ -26,7 +26,10 @@ class Logger():
         d = os.path.dirname(self.filename)
         if not os.path.exists(d):
             os.makedirs(d)
-        self.data.to_csv(self.filename, encoding='utf-8')
+        mode = 'a' if os.path.exists(self.filename) else 'w'
+        head = False if os.path.exists(self.filename) else True
+        self.data.to_csv(self.filename, encoding='utf-8',
+                         header=head, mode=mode)
 
     def check_fileconflict(self):
         """Returns a boolean indicating if the filename is already present."""

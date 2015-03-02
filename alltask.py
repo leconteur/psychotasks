@@ -17,11 +17,9 @@ def configureLogger(filename, check_filename):
     return el.Logger(filename, check_filename=False)
 
 
-def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
+def runEasyNBack(window, logger, sentinels, n_slides, sound_prob, showtime=2.0,
+                 pausetime=0.5, positive_rate=0.3):
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 2.0
-    pausetime = 0.5
-    positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que la lettre "
                         "precedente, appuyez sur la touche 'M'. \n\n"
                         "Sinon, appuyez sur la touche 'Z'.\n\n"
@@ -36,11 +34,10 @@ def runEasyNBack(window, logger, sentinels, n_slides, sound_prob):
     exp.run()
 
 
-def runHardNBack(window, logger, sentinels, n_slides, sound_prob):
+def runHardNBack(window, logger, sentinels, n_slides, sound_prob, showtime=2.0,
+                 pausetime=0.5, positive_rate=0.3):
+
     letters = 'bcdfghjklmnpqrstvwxz'
-    showtime = 2.0
-    pausetime = 0.5
-    positive_rate = 0.3
     instruction_text = ("Si la lettre apparaissant a l'ecran est la meme que l'avant derniere "
                         "lettre, appuyez sur la touche 'M'. \n\n"
                         "Sinon, appuyez sur la touche 'Z'.\n\n"
@@ -135,6 +132,11 @@ if __name__ == "__main__":
     parser.add_argument('--eyetracker', action="store_true",
                         help=("Use this option if you do not wish to check if the eyetracker "
                               "is functionnal."))
+    parser.add_argument('--positive', default=0.3, type=float,
+                        help=("The rate at which nback target will be  true."))
+    parser.add_argument('--showtime', default=2.0, type=float,
+                        help=("The time each nback slide is shown"))
+
     args = parser.parse_args()
     args.soundprob = (args.soundprobright, args.soundprobwrong)
     logfile = "results/" + args.participantNumber + "/"
@@ -153,16 +155,20 @@ if __name__ == "__main__":
         ntrials = 10 if args.practice else 60
         if args.taskname == 'nback':
             if args.workload == 'low':
-                runEasyNBack(window, logger, sentinels, ntrials, args.soundprob)
+                runEasyNBack(window, logger, sentinels, ntrials, args.soundprob,
+                             positive_rate=args.positive, showtime=args.showtime)
             elif args.workload == 'high':
-                runHardNBack(window, logger, sentinels, ntrials, args.soundprob)
+                runHardNBack(window, logger, sentinels, ntrials, args.soundprob,
+                             positive_rate=args.positive, showtime=args.showtime)
         elif args.taskname == 'visual_search':
             #if args.soundprobright != 0.0:
             #    raise NotImplementedError("The sound probability is only for wrong values")
             if args.workload == 'low':
-                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
+                runEasyVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong,
+                                    args.soundtime)
             elif args.workload == 'high':
-                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong, args.soundtime)
+                runHardVisualSearch(window, logger, sentinels, ntrials, args.soundprobwrong,
+                                    args.soundtime)
         elif args.taskname == 'mental_rotation':
             if args.soundprob != (0.0, 0.0):
                 raise NotImplementedError('The sound playing is not implemented for this task.')
