@@ -62,3 +62,5 @@ results_olivier*/
 .ropeproject/
 
 *~
+
+*.ipynb
