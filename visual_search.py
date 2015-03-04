@@ -122,7 +122,7 @@ class VisualSearchSlide(AbstractSlide):
         self.already_played = False
         self.sound_time = configurations['soundtime']
         self.sound_probability = sound_probability
-        self.sound = sound.Sound(440, pausetime)
+        self.sound = sound.Sound("audio/stress.wav", pausetime)
 
     def draw(self):
         self.target.draw(self.window)
