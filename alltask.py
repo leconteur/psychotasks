@@ -138,6 +138,7 @@ if __name__ == "__main__":
                         help=("The rate at which nback target will be  true."))
     parser.add_argument('--showtime', default=2.0, type=float,
                         help=("The time each nback slide is shown"))
+    parser.add_argument('-N', type=int, default=60, help=("The number of slides to be created"))
 
     args = parser.parse_args()
     args.soundprob = (args.soundprobright, args.soundprobwrong)
@@ -154,7 +155,7 @@ if __name__ == "__main__":
     else:
         sentinels = []
     try:
-        ntrials = 10 if args.practice else 60
+        ntrials = 10 if args.practice else args.N
         if args.taskname == 'nback':
             if args.workload == 'low':
                 runEasyNBack(window, logger, sentinels, ntrials, args.soundprob,
