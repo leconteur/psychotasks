@@ -7,6 +7,8 @@ import experiment
 import visual_search as vs
 import argparse
 import eyetribesentinel
+import time
+import sys
 
 
 def configureWindow(scr):

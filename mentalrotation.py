@@ -10,10 +10,14 @@ HARD = 1
 def configure_mr(nslides, difficulty, showtime, pausetime, window):
     target = [random.randint(0, 1) == 1 for _ in range(nslides)]
     slides = []
+    try:
+        fr = 1/window.getActualFrameRate()
+    except TypeError:
+        fr = 1/60.0
     for t in target:
         diff = 'low' if difficulty == EASY else 'high'
         configs = {'showtime':showtime, 'pausetime':pausetime, 'workload':diff}
-        slides.append(MentalRotationSlide(t, difficulty, showtime, pausetime, configs, window))
+        slides.append(MentalRotationSlide(t, difficulty, showtime, pausetime, configs, window, fr))
     return slides
 
 class MentalRotationSlide(AbstractSlide):
@@ -26,10 +30,10 @@ class MentalRotationSlide(AbstractSlide):
     EASYRANGE = (5, 41, 5)
     HARDRANGE = (125, 171, 5)
 
-    def __init__(self, target, difficulty, showtime, pausetime, configurations, window):
+    def __init__(self, target, difficulty, showtime, pausetime, configurations, window, fr):
         self.difficulty = difficulty
         self.target = target
-        super(MentalRotationSlide, self).__init__(showtime, pausetime, configurations, window)
+        super(MentalRotationSlide, self).__init__(showtime, pausetime, configurations, window, fr)
         window.setColor('white')
         window.flip()
         window.flip()
