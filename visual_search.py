@@ -46,6 +46,10 @@ class VisualSearchSlideFactory(object):
 
     def createSlides(self, n_slides):
         try:
+            self.fr = 1/self.window.getActualFrameRate()
+        except TypeError:
+            self.fr = 1/60.0
+        try:
             return [self.createSlide() for _ in range(n_slides)]
         except KeyError as e:
             raise ConfigurationError("The factory was not configured correctly. "
@@ -60,7 +64,7 @@ class VisualSearchSlideFactory(object):
         configs = copy.deepcopy(self.configurations)
         return VisualSearchSlide(self.target, self.configurations.get('sound_probability', 0),
                                  self.distractors, self.configurations['pausetime'],
-                                 configs, self.window)
+                                 configs, self.window, self.fr)
 
     def createTarget(self):
         if self.configurations['target_type'] == "letter":
@@ -113,8 +117,9 @@ def contains(shapelist, shape):
 
 
 class VisualSearchSlide(AbstractSlide):
-    def __init__(self, target, sound_probability, distractors, pausetime, configurations, window):
-        super(VisualSearchSlide, self).__init__(600, pausetime, configurations, window)
+    def __init__(self, target, sound_probability, distractors, pausetime, configurations,
+                 window, fr):
+        super(VisualSearchSlide, self).__init__(600, pausetime, configurations, window, fr)
         self.mouse = event.Mouse()
         self.target = target
         self.distractors = distractors
@@ -122,7 +127,7 @@ class VisualSearchSlide(AbstractSlide):
         self.already_played = False
         self.sound_time = configurations['soundtime']
         self.sound_probability = sound_probability
-        self.sound = sound.Sound(440, pausetime)
+        self.sound = sound.Sound("audio/stress.wav", pausetime)
 
     def draw(self):
         self.target.draw(self.window)

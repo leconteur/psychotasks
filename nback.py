@@ -9,6 +9,11 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, s
                     window):
     """Configure a nback experiment. Returns the chosen value for each trial and
     the target value."""
+    try:
+        fr = 1/window.getActualFrameRate()
+    except TypeError:
+        fr = 1/60.0
+
 
     slides = []
     for i in range(n_trials):
@@ -24,10 +29,11 @@ def configure_nback(n_trials, positives, n_back, choices, showtime, pausetime, s
                     choice = random.choice(choices)
                 target = False
         workload = 'low' if n_back <= 1 else 'high'
-        configs = {'n_back':n_back, 'showtime':showtime, 'pausetime':pausetime,
-                   'positives':positives, 'target':target, 'taskname':'nback',
-                   'workload':workload}
-        slide = NBackSlide(choice, target, sound_probability, showtime, pausetime, configs, window)
+        configs = {'n_back': n_back, 'showtime': showtime, 'pausetime': pausetime,
+                   'positives': positives, 'target': target, 'taskname': 'nback',
+                   'workload': workload}
+        slide = NBackSlide(choice, target, sound_probability, showtime, pausetime, configs,
+                           window, fr)
         slides.append(slide)
     return slides
 
@@ -39,7 +45,7 @@ class NBackSlide(AbstractSlide):
     BOTH_ANSWERS = 'both answers'
 
     def __init__(self, value, target, sound_probability, showtime, pausetime,
-                 configurations, window):
+                 configurations, window, fr):
         self.textstim = visual.TextStim(window, value, height=0.15)
         self.reminder = visual.TextStim(window, text="Pareil: 'M'\nDifferent: 'Z'",
                                         pos=(-0.85, -0.90), height=0.04)
@@ -47,8 +53,8 @@ class NBackSlide(AbstractSlide):
         self.target = target
         self.sound_probability = sound_probability
         self.already_played = False
-        self.sound = sound.Sound(440, pausetime)
-        super(NBackSlide, self).__init__(showtime, pausetime, configurations, window)
+        self.sound = sound.Sound('audio/stress.wav', pausetime)
+        super(NBackSlide, self).__init__(showtime, pausetime, configurations, window, fr)
 
     def draw(self):
         self.textstim.draw(self.window)
@@ -78,7 +84,7 @@ class NBackSlide(AbstractSlide):
             ans = self.ABSENT
         else:
             ans = self.OMIT
-        return {'participant response':ans}
+        return {'participant response': ans}
 
     def play_sound(self, answers):
         if not self.already_played and self.answered:
@@ -93,7 +99,6 @@ class NBackSlide(AbstractSlide):
                 if random.random() < self.sound_probability[1]:
                     self.sound.play()
                     self.sound_played = True
-
 
     def good_answer(self, answers):
         if self.target is None:
