@@ -133,6 +133,8 @@ if __name__ == "__main__":
                         help="The waiting time between trials (nback)")
     parser.add_argument('--showtime', type=float, default=2,
                         help="The showing time for each trials (nback)")
+    parser.add_argument('-N', type=int, default=60, help=("The number of slides to be created"))
+
 
     args = parser.parse_args()
     args.soundprob = (args.soundprobright, args.soundprobwrong)
@@ -149,7 +151,7 @@ if __name__ == "__main__":
     else:
         sentinels = []
     try:
-        ntrials = 10 if args.practice else 60
+        ntrials = 10 if args.practice else args.N
         if args.taskname == 'nback':
             if args.workload == 'low':
                 runEasyNBack(window, logger, sentinels, ntrials, args.soundprob, args.showtime, args.pausetime, positive_rate=0.5)
